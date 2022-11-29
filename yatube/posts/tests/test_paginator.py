@@ -46,8 +46,8 @@ class PaginatorViewsTests(TestCase):
                 kwargs={'username': user_name}): POSTS_PER_PAGE,
             reverse(
                 'posts:profile',
-                kwargs={'username': user_name})
-                + '?page=2': TEST_POSTS_PER_PAGE,
+                kwargs={'username': user_name}) +
+                '?page=2': TEST_POSTS_PER_PAGE,
         }
 
         for rev_name, post_count in number_of_posts_per_page.items():
