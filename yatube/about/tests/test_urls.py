@@ -1,6 +1,5 @@
 from django.test import Client, TestCase
 
-# Использовать SubTests 
 
 class AboutURLTests(TestCase):
     def setUp(self):

@@ -45,7 +45,7 @@ class PostsViewsTests(TestCase):
                 kwargs={'post_id': post_id}): 'posts/post_detail.html',
             reverse('posts:post_create'): 'posts/post_create.html',
             reverse(
-                'posts:post_edit', 
+                'posts:post_edit',
                 kwargs={'post_id': post_id}): 'posts/post_create.html',
         }
 
@@ -89,11 +89,16 @@ class PostsViewsTests(TestCase):
     def test_post_detail_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:post_detail', kwargs={'post_id': PostsViewsTests.post.id})
+            reverse('posts:post_detail', kwargs={
+                'post_id': PostsViewsTests.post.id})
         )
-        self.assertEqual(response.context.get('post').author, PostsViewsTests.user)
-        self.assertEqual(response.context.get('post').text,'test text')
-        self.assertEqual(response.context.get('post').group, PostsViewsTests.group)
+        self.assertEqual(
+            response.context.get('post').author, PostsViewsTests.user
+            )
+        self.assertEqual(response.context.get('post').text, 'test text')
+        self.assertEqual(
+            response.context.get('post').group, PostsViewsTests.group
+            )
 
     def test_post_create_or_edit_show_correct_context(self):
         """Шаблон post_create/post_edit сформирован с правильным контекстом."""
@@ -106,7 +111,9 @@ class PostsViewsTests(TestCase):
             reverse('posts:post_create')
         )
         response_1 = self.authorized_client.get(
-            reverse('posts:post_edit', kwargs={'post_id': PostsViewsTests.post.id})
+            reverse(
+                'posts:post_edit', kwargs={'post_id': PostsViewsTests.post.id}
+                )
         )
         for value, expected in form_fields.items():
             with self.subTest(value=value):
@@ -114,5 +121,3 @@ class PostsViewsTests(TestCase):
                 form_field_1 = response_1.context.get('form').fields.get(value)
                 self.assertIsInstance(form_field_0, expected)
                 self.assertIsInstance(form_field_1, expected)
-
-

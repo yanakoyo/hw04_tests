@@ -7,12 +7,10 @@ User = get_user_model()
 
 class Group(models.Model):
     title = models.CharField(
-        #'Заголовок',
         max_length=200,
         verbose_name='group name',
         help_text='what should we call it')
     slug = models.SlugField(
-        #'Адрес для страницы с задачей',
         max_length=200,
         unique=True,
         verbose_name='group url',
@@ -58,5 +56,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.text[:15]
-
-

@@ -35,7 +35,7 @@ class PostCreateFormTests(TestCase):
     def test_create_post_works(self):
         posts_count = Post.objects.all().count()
         form_data = {
-            'text':'test text',
+            'text': 'test text',
             'group': self.group.pk
         }
         response = self.authorized_client.post(
@@ -43,20 +43,23 @@ class PostCreateFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        self.assertRedirects(response, reverse('posts:profile',
-                kwargs={'username': self.user.username}))
-        self.assertEqual(Post.objects.all().count(), posts_count+1)
+        self.assertRedirects(
+            response, reverse(
+                'posts:profile', kwargs={'username': self.user.username}
+                )
+        )
+        self.assertEqual(Post.objects.all().count(), posts_count + 1)
         self.assertTrue(
             Post.objects.filter(
                 text='test text',
-                group= self.group
+                group=self.group
             ).exists()
         )
 
     def test_edit_post_works(self):
         posts_count = Post.objects.all().count()
         form_data = {
-            'text':'test text modified',
+            'text': 'test text modified',
             'group': self.group.pk
         }
         response = self.authorized_client.post(
@@ -71,6 +74,8 @@ class PostCreateFormTests(TestCase):
                 group=self.group.pk
             ).exists()
         )
-        self.assertRedirects(response, reverse('posts:post_detail',
-                kwargs={'post_id': self.post.pk}))
-  
+        self.assertRedirects(
+            response, reverse(
+                'posts:post_detail', kwargs={'post_id': self.post.pk}
+                )
+        )

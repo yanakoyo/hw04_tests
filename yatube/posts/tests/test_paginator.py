@@ -8,6 +8,7 @@ User = get_user_model()
 
 TEST_POSTS_PER_PAGE = 3
 
+
 class PaginatorViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -19,7 +20,7 @@ class PaginatorViewsTests(TestCase):
             description='test description',
         )
         post_list = []
-        for i in range(0,(POSTS_PER_PAGE+TEST_POSTS_PER_PAGE)):
+        for i in range(0, (POSTS_PER_PAGE + TEST_POSTS_PER_PAGE)):
             post_list.append(
                 Post.objects.create(
                     author=cls.user,
@@ -45,7 +46,8 @@ class PaginatorViewsTests(TestCase):
                 kwargs={'username': user_name}): POSTS_PER_PAGE,
             reverse(
                 'posts:profile',
-                kwargs={'username': user_name}) + '?page=2': TEST_POSTS_PER_PAGE,
+                kwargs={'username': user_name}
+                ) + '?page=2': TEST_POSTS_PER_PAGE,
         }
 
         for rev_name, post_count in number_of_posts_per_page.items():

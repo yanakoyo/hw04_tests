@@ -92,14 +92,14 @@ class PostsURLTests(TestCase):
                 kwargs={'post_id': post_id}): 'posts/post_detail.html',
             reverse('posts:post_create'): 'posts/post_create.html',
             reverse(
-                'posts:post_edit', 
+                'posts:post_edit',
                 kwargs={'post_id': post_id}): 'posts/post_create.html',
         }
 
         for reverse_address, template in templates_page_names.items():
             response = self.authorized_client.get(reverse_address)
             error_message = (f'Для адресной строки {reverse_address} ;'
-                           f'ожидается шаблон: {template}')
+                             f'ожидается шаблон: {template}')
 
             with self.subTest(template=template, response=response):
                 self.assertTemplateUsed(response, template, error_message)
