@@ -93,12 +93,10 @@ class PostsViewsTests(TestCase):
                 'post_id': PostsViewsTests.post.id})
         )
         self.assertEqual(
-            response.context.get('post').author, PostsViewsTests.user
-            )
+            response.context.get('post').author, PostsViewsTests.user)
         self.assertEqual(response.context.get('post').text, 'test text')
         self.assertEqual(
-            response.context.get('post').group, PostsViewsTests.group
-            )
+            response.context.get('post').group, PostsViewsTests.group)
 
     def test_post_create_or_edit_show_correct_context(self):
         """Шаблон post_create/post_edit сформирован с правильным контекстом."""
@@ -112,8 +110,7 @@ class PostsViewsTests(TestCase):
         )
         response_1 = self.authorized_client.get(
             reverse(
-                'posts:post_edit', kwargs={'post_id': PostsViewsTests.post.id}
-                )
+                'posts:post_edit', kwargs={'post_id': PostsViewsTests.post.id})
         )
         for value, expected in form_fields.items():
             with self.subTest(value=value):
