@@ -21,7 +21,6 @@ class PostCreateFormTests(TestCase):
             text='test text',
             group=cls.group
         )
-        # cls.form = PostForm()
 
     def setUp(self):
         """Создаем нового клиента для каждого теста."""

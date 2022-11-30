@@ -22,6 +22,22 @@ class PostsViewsTests(TestCase):
             text='test text',
             group=cls.group
         )
+        cls.templates_pages_names = {
+            reverse('posts:index'): 'posts/index.html',
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': cls.group.slug}): 'posts/group_list.html',
+            reverse(
+                'posts:profile',
+                kwargs={'username': cls.user.username}): 'posts/profile.html',
+            reverse(
+                'posts:post_detail',
+                kwargs={'post_id': cls.post.pk}): 'posts/post_detail.html',
+            reverse('posts:post_create'): 'posts/post_create.html',
+            reverse(
+                'posts:post_edit',
+                kwargs={'post_id': cls.post.pk}): 'posts/post_create.html',
+        }
 
     def setUp(self):
         self.authorized_client = Client()
@@ -29,27 +45,7 @@ class PostsViewsTests(TestCase):
 
     def test_pages_use_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
-        user_name = self.user.username
-        post_id = self.post.id
-        slug = self.group.slug
-        templates_pages_names = {
-            reverse('posts:index'): 'posts/index.html',
-            reverse(
-                'posts:group_list',
-                kwargs={'slug': slug}): 'posts/group_list.html',
-            reverse(
-                'posts:profile',
-                kwargs={'username': user_name}): 'posts/profile.html',
-            reverse(
-                'posts:post_detail',
-                kwargs={'post_id': post_id}): 'posts/post_detail.html',
-            reverse('posts:post_create'): 'posts/post_create.html',
-            reverse(
-                'posts:post_edit',
-                kwargs={'post_id': post_id}): 'posts/post_create.html',
-        }
-
-        for reverse_name, template in templates_pages_names.items():
+        for reverse_name, template in self.templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
@@ -61,9 +57,9 @@ class PostsViewsTests(TestCase):
         post_author_0 = first_object.author.username
         post_text_0 = first_object.text
         post_group_0 = first_object.group.title
-        self.assertEqual(post_author_0, 'testUser')
-        self.assertEqual(post_text_0, 'test text')
-        self.assertEqual(post_group_0, 'test group')
+        self.assertEqual(post_author_0, self.user.username)
+        self.assertEqual(post_text_0, self.post.text)
+        self.assertEqual(post_group_0, self.group.title)
 
     def test_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
@@ -77,10 +73,10 @@ class PostsViewsTests(TestCase):
         post_group_slug_0 = first_object.group.slug
         post_group_description_0 = first_object.group.description
         self.assertEqual(post_author_0, self.user.username)
-        self.assertEqual(post_text_0, 'test text')
-        self.assertEqual(post_group_0, 'test group')
-        self.assertEqual(post_group_slug_0, 'slug')
-        self.assertEqual(post_group_description_0, 'test description')
+        self.assertEqual(post_text_0, self.post.text)
+        self.assertEqual(post_group_0, self.group.title)
+        self.assertEqual(post_group_slug_0, self.group.slug)
+        self.assertEqual(post_group_description_0, self.group.description)
 
     def test_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
@@ -94,7 +90,7 @@ class PostsViewsTests(TestCase):
         )
         self.assertEqual(
             response.context.get('post').author, PostsViewsTests.user)
-        self.assertEqual(response.context.get('post').text, 'test text')
+        self.assertEqual(response.context.get('post').text, self.post.text)
         self.assertEqual(
             response.context.get('post').group, PostsViewsTests.group)
 

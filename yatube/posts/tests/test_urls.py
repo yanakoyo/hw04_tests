@@ -23,37 +23,49 @@ class PostsURLTests(TestCase):
             text='test text',
             group=cls.group,
         )
+        cls.public_urls = (
+            ('/', 'index.html'),
+            (f'/group/{cls.group.slug}/', 'group.html'),
+            (f'/profile/{cls.user.username}/', 'profile.html'),
+            (f'/posts/{cls.post.pk}/', 'post_detail.html')
+        )
+        cls.private_urls = (
+            ('/create/', 'post_create.html'),
+            (f'/posts/{cls.post.pk}/edit/', 'post_create.html')
+        )
+        cls.templates_page_names = {
+            reverse('posts:index'): 'posts/index.html',
+            reverse(
+                'posts:group_list',
+                kwargs={'slug': cls.group.slug}): 'posts/group_list.html',
+            reverse(
+                'posts:profile',
+                kwargs={'username': cls.user.username}): 'posts/profile.html',
+            reverse(
+                'posts:post_detail',
+                kwargs={'post_id': cls.post.pk}): 'posts/post_detail.html',
+            reverse('posts:post_create'): 'posts/post_create.html',
+            reverse(
+                'posts:post_edit',
+                kwargs={'post_id': cls.post.pk}): 'posts/post_create.html',
+        }
 
     def setUp(self):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
-    # Тестирование доступности страниц неавто пользователю - привести к циклу
     def test_pages_availability(self):
         """Страница не доступна пользователю"""
-        post_id = self.post.id
-        username = self.user.username
-        pages_list_guest = [
-            '/',
-            f'/posts/{post_id}/',
-            '/group/slug/',
-            f'/profile/{username}/'
-        ]
-        pages_list_auth = [
-            '/create/',
-            f'/posts/{post_id}/edit/',
-        ]
-
-        for address in pages_list_guest:
-            response = self.guest_client.get(address)
+        for address in self.public_urls:
+            response = self.guest_client.get(address[0])
             with self.subTest(response=response):
-                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
 
-        for address in pages_list_auth:
-            response = self.authorized_client.get(address)
+        for address in self.private_urls:
+            response = self.authorized_client.get(address[0])
             with self.subTest(response=response):
-                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, HTTPStatus.OK)
 
     # Проверяем редиректы для неавторизованного пользователя
     def test_create_url_redirect_anonymous(self):
@@ -74,29 +86,9 @@ class PostsURLTests(TestCase):
             response, f'/auth/login/?next=/posts/{self.post.id}/edit/'
         )
 
-    # Проверка шаблонов
     def test_pages_use_correct_templates(self):
-        user_name = self.user.username
-        post_id = self.post.id
-        slug = self.group.slug
-        templates_page_names = {
-            reverse('posts:index'): 'posts/index.html',
-            reverse(
-                'posts:group_list',
-                kwargs={'slug': slug}): 'posts/group_list.html',
-            reverse(
-                'posts:profile',
-                kwargs={'username': user_name}): 'posts/profile.html',
-            reverse(
-                'posts:post_detail',
-                kwargs={'post_id': post_id}): 'posts/post_detail.html',
-            reverse('posts:post_create'): 'posts/post_create.html',
-            reverse(
-                'posts:post_edit',
-                kwargs={'post_id': post_id}): 'posts/post_create.html',
-        }
-
-        for reverse_address, template in templates_page_names.items():
+        """Проверка использования правильных шаблонов."""
+        for reverse_address, template in self.templates_page_names.items():
             response = self.authorized_client.get(reverse_address)
             error_message = (f'Для адресной строки {reverse_address} ;'
                              f'ожидается шаблон: {template}')

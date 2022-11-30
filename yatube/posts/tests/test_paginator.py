@@ -4,6 +4,7 @@ from django.urls import reverse
 from posts.models import Group, Post
 from posts.views import POSTS_PER_PAGE
 
+
 User = get_user_model()
 
 TEST_POSTS_PER_PAGE = 3
@@ -19,15 +20,14 @@ class PaginatorViewsTests(TestCase):
             slug='slug',
             description='test description',
         )
-        post_list = []
-        for i in range(0, (POSTS_PER_PAGE + TEST_POSTS_PER_PAGE)):
-            post_list.append(
-                Post.objects.create(
-                    author=cls.user,
-                    text=f'test text {i}',
-                    group=cls.group
-                )
-            )
+        cls.post = Post.objects.bulk_create(
+            Post(
+                author=cls.user,
+                text=f'test text {i}',
+                group=cls.group,
+                id=f'{i}'
+            ) for i in range(POSTS_PER_PAGE + TEST_POSTS_PER_PAGE)
+        )
 
     def test_paginator(self):
         user_name = self.user.username
