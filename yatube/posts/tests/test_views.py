@@ -64,7 +64,7 @@ class PostsViewsTests(TestCase):
     def test_group_list_show_correct_context(self):
         """Шаблон group_list сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:group_list', kwargs={'slug': self.group.slug })
+            reverse('posts:group_list', kwargs={'slug': self.group.slug})
         )
         first_object = response.context['page_obj'][0]
         post_author_0 = first_object.author.username
