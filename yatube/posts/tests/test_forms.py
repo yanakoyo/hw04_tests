@@ -49,7 +49,7 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.all().count(), posts_count + 1)
         self.assertTrue(
             Post.objects.filter(
-                text='test text',
+                text=form_data['text'],
                 group=self.group
             ).exists()
         )
@@ -68,7 +68,7 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(Post.objects.all().count(), posts_count)
         self.assertTrue(
             Post.objects.filter(
-                text='test text modified',
+                text=form_data['text'],
                 group=self.group.pk
             ).exists()
         )

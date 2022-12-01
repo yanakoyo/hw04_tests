@@ -25,7 +25,7 @@ class PaginatorViewsTests(TestCase):
                 author=cls.user,
                 text=f'test text {i}',
                 group=cls.group,
-                id=f'{i}'
+                id=i
             ) for i in range(POSTS_PER_PAGE + TEST_POSTS_PER_PAGE)
         )
 

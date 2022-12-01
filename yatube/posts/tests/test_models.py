@@ -13,7 +13,7 @@ class PostModelTest(TestCase):
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
             title='Тестовая группа',
-            slug='Тестовый слаг' * 10,
+            slug='test_slug' * 10,
             description='Тестовое описание',
         )
         cls.post = Post.objects.create(
