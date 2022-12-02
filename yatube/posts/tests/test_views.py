@@ -80,7 +80,16 @@ class PostsViewsTests(TestCase):
 
     def test_profile_show_correct_context(self):
         """Шаблон profile сформирован с правильным контекстом."""
-        pass
+        response = self.authorized_client.get(
+            reverse('posts:profile', kwargs={'username': self.user})
+        )
+        first_object = response.context['page_obj'][0]
+        post_author_0 = first_object.author.username
+        post_text_0 = first_object.text
+        post_group_0 = first_object.group.title
+        self.assertEqual(post_author_0, self.user.username)
+        self.assertEqual(post_text_0, self.post.text)
+        self.assertEqual(post_group_0, self.group.title)
 
     def test_post_detail_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
